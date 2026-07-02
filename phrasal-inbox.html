@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHRASAL INBOX — 社内メール英語 句動詞辞典</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Inter:wght@400;500;600;700&display=swap');
+
+:root{
+  --paper:#ECEBE3;
+  --panel:#FFFFFF;
+  --ink:#1C2321;
+  --muted:#726C5E;
+  --hairline:#D9D4C6;
+  --navy:#2B3A5C;
+  --navy-dim:#4A5A7D;
+  --mustard:#B9822A;
+  --mustard-bg:#F3E7CD;
+  --neutral-bg:#DDE3E0;
+  --brick:#A8442E;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  min-height:100vh;
+}
+
+.app{
+  max-width:1180px;
+  margin:0 auto;
+  padding:28px 20px 60px;
+}
+
+/* ---------- Topbar ---------- */
+.topbar{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:20px;
+  flex-wrap:wrap;
+  border-bottom:3px solid var(--ink);
+  padding-bottom:16px;
+  margin-bottom:6px;
+}
+.wordmark{
+  font-family:'Courier Prime', monospace;
+  font-weight:700;
+  font-size:26px;
+  letter-spacing:0.5px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.wordmark .stamp-dot{
+  width:12px;height:12px;border-radius:50%;
+  background:var(--brick);
+  display:inline-block;
+  box-shadow:0 0 0 3px rgba(168,68,46,0.18);
+}
+.subtitle{
+  font-size:13px;
+  color:var(--muted);
+  font-family:'Courier Prime',monospace;
+  margin-top:2px;
+}
+.count-badge{
+  font-family:'Courier Prime',monospace;
+  font-size:12.5px;
+  color:var(--navy);
+  background:var(--neutral-bg);
+  border:1px solid var(--hairline);
+  padding:4px 10px;
+  border-radius:3px;
+  white-space:nowrap;
+  align-self:center;
+}
+
+/* ---------- Search ---------- */
+.searchwrap{
+  margin:20px 0 22px;
+}
+.searchbox{
+  width:100%;
+  padding:13px 16px;
+  font-size:15px;
+  font-family:'Inter',sans-serif;
+  border:1.5px solid var(--ink);
+  border-radius:4px;
+  background:var(--panel);
+  color:var(--ink);
+  outline:none;
+}
+.searchbox::placeholder{color:var(--muted);}
+.searchbox:focus{border-color:var(--navy); box-shadow:0 0 0 3px rgba(43,58,92,0.12);}
+
+/* ---------- Layout ---------- */
+.layout{
+  display:grid;
+  grid-template-columns:200px 1fr;
+  gap:24px;
+  align-items:start;
+}
+@media (max-width:760px){
+  .layout{grid-template-columns:1fr;}
+}
+
+/* ---------- Folders (sidebar) ---------- */
+.folders{
+  position:sticky;
+  top:20px;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.folders-label{
+  font-family:'Courier Prime',monospace;
+  font-size:11px;
+  letter-spacing:1.5px;
+  color:var(--muted);
+  margin-bottom:8px;
+  text-transform:uppercase;
+}
+.folder-btn{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  padding:8px 10px;
+  border:none;
+  background:transparent;
+  border-radius:4px;
+  cursor:pointer;
+  font-family:'Inter',sans-serif;
+  font-size:13.5px;
+  color:var(--ink);
+  text-align:left;
+  width:100%;
+}
+.folder-btn:hover{background:rgba(43,58,92,0.07);}
+.folder-btn.active{
+  background:var(--ink);
+  color:var(--paper);
+}
+.folder-btn .n{
+  font-family:'Courier Prime',monospace;
+  font-size:11px;
+  color:var(--muted);
+  opacity:0.9;
+}
+.folder-btn.active .n{color:var(--paper); opacity:0.6;}
+
+@media (max-width:760px){
+  .folders{
+    position:static;
+    flex-direction:row;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+  .folder-btn{width:auto;}
+  .folders-label{display:none;}
+}
+
+/* ---------- Register legend ---------- */
+.legend{
+  display:flex;
+  gap:14px;
+  margin:18px 0 4px;
+  font-size:12px;
+  color:var(--muted);
+  font-family:'Courier Prime',monospace;
+  flex-wrap:wrap;
+}
+.legend span{display:flex;align-items:center;gap:6px;}
+.legend .dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+
+/* ---------- List ---------- */
+.list{
+  border-top:1px solid var(--hairline);
+}
+.row{
+  border-bottom:1px solid var(--hairline);
+  background:var(--panel);
+  cursor:pointer;
+  transition:background 0.15s ease;
+}
+.row:hover{background:#FAFAF6;}
+.row-head{
+  display:grid;
+  grid-template-columns:14px 1fr auto auto;
+  align-items:center;
+  gap:14px;
+  padding:13px 14px;
+}
+.reg-dot{
+  width:9px;height:9px;border-radius:50%;
+  background:var(--navy-dim);
+  flex-shrink:0;
+}
+.reg-dot.casual{background:var(--mustard);}
+
+.row-main{min-width:0;}
+.row-verb{
+  font-family:'Courier Prime',monospace;
+  font-weight:700;
+  font-size:15.5px;
+  color:var(--ink);
+}
+.row-verb .car{color:var(--brick); margin-left:6px; font-size:12px;}
+.row-preview{
+  font-size:12.5px;
+  color:var(--muted);
+  margin-top:2px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.row-cat{
+  font-family:'Courier Prime',monospace;
+  font-size:10.5px;
+  letter-spacing:0.5px;
+  color:var(--navy);
+  background:var(--neutral-bg);
+  padding:4px 8px;
+  border-radius:3px;
+  white-space:nowrap;
+  text-transform:uppercase;
+}
+.row-toggle{
+  font-family:'Courier Prime',monospace;
+  color:var(--muted);
+  font-size:13px;
+  width:16px;
+  text-align:center;
+}
+
+.row-body{
+  max-height:0;
+  overflow:hidden;
+  transition:max-height 0.25s ease;
+  background:#FBFAF6;
+  border-top:1px dashed var(--hairline);
+}
+.row.open .row-body{max-height:400px;}
+.row-body-inner{
+  padding:16px 14px 20px 42px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.field-label{
+  font-family:'Courier Prime',monospace;
+  font-size:10.5px;
+  letter-spacing:1px;
+  color:var(--muted);
+  text-transform:uppercase;
+  margin-bottom:3px;
+}
+.meaning{font-size:14.5px; line-height:1.6;}
+.example{
+  font-size:14px;
+  line-height:1.65;
+  background:var(--panel);
+  border-left:3px solid var(--navy);
+  padding:9px 12px;
+  border-radius:0 3px 3px 0;
+}
+.example b{color:var(--brick);}
+.nuance{
+  font-size:13.5px;
+  line-height:1.6;
+  color:#33392F;
+}
+.reg-line{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:12.5px;
+  color:var(--muted);
+  font-family:'Courier Prime',monospace;
+}
+
+.no-results{
+  padding:40px 10px;
+  text-align:center;
+  color:var(--muted);
+  font-family:'Courier Prime',monospace;
+  font-size:13px;
+}
+
+footer{
+  margin-top:34px;
+  padding-top:16px;
+  border-top:1px solid var(--hairline);
+  font-size:11.5px;
+  color:var(--muted);
+  font-family:'Courier Prime',monospace;
+  text-align:center;
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <div class="topbar">
+    <div>
+      <div class="wordmark"><span class="stamp-dot"></span>PHRASAL INBOX</div>
+      <div class="subtitle">よく使う社内メール英語 — 句動詞リファレンス</div>
+    </div>
+    <div class="count-badge" id="countBadge">— verbs</div>
+  </div>
+
+  <div class="searchwrap">
+    <input class="searchbox" id="search" type="text" placeholder="検索: 例) follow up / 催促 / 送る ...">
+  </div>
+
+  <div class="legend">
+    <span><span class="dot" style="background:var(--navy-dim)"></span>ニュートラル(社外にも使える)</span>
+    <span><span class="dot" style="background:var(--mustard)"></span>くだけた(社内・近しい相手向け)</span>
+  </div>
+
+  <div class="layout">
+    <div class="folders" id="folders">
+      <div class="folders-label">Folders</div>
+    </div>
+
+    <div>
+      <div class="list" id="list"></div>
+      <div class="no-results" id="noResults" style="display:none;">該当する句動詞が見つかりませんでした。</div>
+    </div>
+  </div>
+
+  <footer>Ryu's personal reference — click a row to expand definition, example &amp; nuance</footer>
+</div>
+
+<script>
+const DATA = [
+  {v:"shoot over", cat:"依頼する", reg:"casual",
+   meaning:"(メールなどで)さっと送る",
+   example:"Could you <b>shoot over</b> the latest deck when you get a chance?",
+   nuance:"send より軽くてカジュアル。社内の気心の知れた相手向け。"},
+  {v:"reach out", cat:"依頼する", reg:"neutral",
+   meaning:"連絡を取る、声をかける",
+   example:"I'll <b>reach out</b> to the client directly to confirm timing.",
+   nuance:"社外向けにも自然に使える定番表現。contact よりやわらかい印象。"},
+  {v:"run (something) by (someone)", cat:"依頼する", reg:"neutral",
+   meaning:"〜に確認してもらう、意見を聞く",
+   example:"Let me <b>run this by</b> Andy before we send it out.",
+   nuance:"最終判断の前に誰かに一度見てもらう、というニュアンス。"},
+  {v:"bring up", cat:"依頼する", reg:"neutral",
+   meaning:"話題に出す、切り出す",
+   example:"I'll <b>bring up</b> the timeline issue on tomorrow's call.",
+   nuance:"raise a topic のカジュアル版。会議前の予告として便利。"},
+  {v:"back up", cat:"依頼する", reg:"casual",
+   meaning:"(意見・立場を)支持する、後押しする",
+   example:"Can you <b>back me up</b> on this in the meeting?",
+   nuance:"「援護してほしい」という頼み方。社内限定のトーン。"},
+
+  {v:"ask around", cat:"依頼する", reg:"casual",
+   meaning:"周りに聞いてみる",
+   example:"Let me <b>ask around</b> and see if anyone has the old file.",
+   nuance:"特定の相手ではなく「誰かに聞いてみる」というカジュアルな表現。"},
+  {v:"call on", cat:"依頼する", reg:"neutral",
+   meaning:"(人を)指名する、頼る",
+   example:"We may <b>call on</b> you to walk the board through the numbers.",
+   nuance:"「いざという時に頼む」というやや改まったニュアンスも持つ。"},
+  {v:"draw on", cat:"依頼する", reg:"neutral",
+   meaning:"(経験・知識を)活用する",
+   example:"We'll need to <b>draw on</b> James's geology background for this.",
+   nuance:"人や資源の持つ経験・強みを引き出して使うイメージ。"},
+  {v:"count on", cat:"依頼する", reg:"neutral",
+   meaning:"頼りにする、あてにする",
+   example:"We're <b>counting on</b> Blakes to turn this around by Friday.",
+   nuance:"「頼りにしている」という信頼を伝える表現。依頼と感謝の中間的トーン。"},
+
+  {v:"follow up", cat:"フォローアップ", reg:"neutral",
+   meaning:"フォローする、追って確認する",
+   example:"Just <b>following up</b> on the email I sent last week.",
+   nuance:"催促メールの定番オープニング。角が立ちにくい。"},
+  {v:"circle back", cat:"フォローアップ", reg:"neutral",
+   meaning:"話を戻す、後で改めて確認する",
+   example:"Let's <b>circle back</b> on this once the numbers are confirmed.",
+   nuance:"やや使われすぎな企業ジャーゴン気味だが依然よく使われる。"},
+  {v:"check in", cat:"フォローアップ", reg:"neutral",
+   meaning:"様子を確認する、進捗を聞く",
+   example:"Wanted to <b>check in</b> on where things stand with Blakes.",
+   nuance:"プレッシャーを与えずに進捗確認したいときに便利。"},
+  {v:"touch base", cat:"フォローアップ", reg:"neutral",
+   meaning:"軽く連絡を取る、簡単に確認し合う",
+   example:"Can we <b>touch base</b> before the board call?",
+   nuance:"短時間の確認・すり合わせを指すことが多い。"},
+  {v:"catch up", cat:"フォローアップ", reg:"casual",
+   meaning:"近況を共有する、追いつく",
+   example:"Let's grab 15 minutes to <b>catch up</b> on Morningstar.",
+   nuance:"雑談混じりの近況確認。フォーマル度は低め。"},
+  {v:"chase up", cat:"フォローアップ", reg:"neutral",
+   meaning:"(返事などを)催促する",
+   example:"I'll <b>chase up</b> the escrow agent for confirmation.",
+   nuance:"follow up よりやや直接的。英連邦系の英語でよく使われる。"},
+  {v:"hear back", cat:"フォローアップ", reg:"neutral",
+   meaning:"(相手から)返事をもらう",
+   example:"We haven't <b>heard back</b> from Assante yet.",
+   nuance:"受け身表現。「まだ返事がない」を伝える定番。"},
+  {v:"get back to", cat:"フォローアップ", reg:"neutral",
+   meaning:"(相手に)後で返事する",
+   example:"I'll <b>get back to</b> you by end of day.",
+   nuance:"reply より柔らかく、口頭でもメールでも自然。"},
+
+  {v:"keep tabs on", cat:"フォローアップ", reg:"casual",
+   meaning:"注意して見ておく、把握しておく",
+   example:"I'm <b>keeping tabs on</b> the escrow account balances daily.",
+   nuance:"監視・注視のニュアンス。やや口語的。"},
+  {v:"keep an eye on", cat:"フォローアップ", reg:"neutral",
+   meaning:"気にかけておく、見守る",
+   example:"Could you <b>keep an eye on</b> this thread while I'm offline?",
+   nuance:"keep tabs on より柔らかく、幅広い場面で使える。"},
+  {v:"catch up on", cat:"フォローアップ", reg:"casual",
+   meaning:"(遅れていることを)まとめて片付ける",
+   example:"I need to <b>catch up on</b> emails after the closing.",
+   nuance:"たまっていたものをまとめて処理する、というニュアンス。"},
+
+  {v:"loop in", cat:"共有・連携", reg:"neutral",
+   meaning:"(人を)話に加える、共有する",
+   example:"Let's <b>loop in</b> Claude before we finalize this.",
+   nuance:"CCに追加する、会話に招き入れるイメージ。"},
+  {v:"loop out", cat:"共有・連携", reg:"casual",
+   meaning:"(人を)話から外す",
+   example:"We can <b>loop</b> the vendor <b>out</b> of this thread now.",
+   nuance:"loop in の対義語。使用頻度はやや低め。"},
+  {v:"flag", cat:"共有・連携", reg:"neutral",
+   meaning:"指摘する、注意喚起する",
+   example:"Just <b>flagging</b> that the deadline moved to Friday.",
+   nuance:"「一応共有しておきます」という前置きに最適。"},
+  {v:"keep posted", cat:"共有・連携", reg:"neutral",
+   meaning:"随時状況を共有する",
+   example:"I'll <b>keep you posted</b> as soon as we hear from TTS.",
+   nuance:"進捗報告の約束をするときの締め言葉として頻出。"},
+  {v:"keep in the loop", cat:"共有・連携", reg:"neutral",
+   meaning:"情報共有の輪に入れておく",
+   example:"Please <b>keep me in the loop</b> on any pricing changes.",
+   nuance:"loop in の派生表現。継続的な共有を求めるニュアンス。"},
+  {v:"hand off", cat:"共有・連携", reg:"neutral",
+   meaning:"引き継ぐ、任せる",
+   example:"I'll <b>hand this off</b> to Yutaka once the draft is ready.",
+   nuance:"業務の受け渡し。delegate よりカジュアル。"},
+  {v:"pass along", cat:"共有・連携", reg:"neutral",
+   meaning:"(情報を)転送する、伝える",
+   example:"Could you <b>pass this along</b> to the rest of the team?",
+   nuance:"forward とほぼ同義だが、より口語的。"},
+  {v:"sync up", cat:"共有・連携", reg:"casual",
+   meaning:"認識をすり合わせる",
+   example:"Let's <b>sync up</b> before the call with Bernie.",
+   nuance:"複数人の情報・認識を揃えるニュアンス。社内向け。"},
+
+  {v:"fill in", cat:"共有・連携", reg:"neutral",
+   meaning:"代役を務める / 詳細を伝える",
+   example:"I'll <b>fill you in on</b> what was discussed on the call.",
+   nuance:"欠席者に後から状況を伝える場面で頻出。"},
+  {v:"team up", cat:"共有・連携", reg:"casual",
+   meaning:"協力する、組む",
+   example:"We're <b>teaming up</b> with Canaccord on the brokered tranche.",
+   nuance:"partner withよりカジュアルで軽い響き。"},
+  {v:"put (someone) in touch with", cat:"共有・連携", reg:"neutral",
+   meaning:"(人を)紹介する、繋げる",
+   example:"I'll <b>put you in touch with</b> our contact at Marrelli Trust.",
+   nuance:"connect よりビジネスメールで自然に使われる言い方。"},
+
+  {v:"sign off on", cat:"承認・同意", reg:"neutral",
+   meaning:"承認する、ゴーサインを出す",
+   example:"Compliance still needs to <b>sign off on</b> this trade.",
+   nuance:"approve のややカジュアルな言い換え。頻出。"},
+  {v:"buy in / buy-in", cat:"承認・同意", reg:"neutral",
+   meaning:"賛同する、賛同(名詞)",
+   example:"We need everyone's <b>buy-in</b> before moving forward.",
+   nuance:"名詞としてもよく使われる(get buy-in from the board)。"},
+  {v:"weigh in", cat:"承認・同意", reg:"neutral",
+   meaning:"意見を述べる",
+   example:"Would love for James to <b>weigh in</b> on the geology section.",
+   nuance:"議論に一言加えてほしいときに使う。"},
+  {v:"land on", cat:"承認・同意", reg:"casual",
+   meaning:"(議論の末に)〜に決着する",
+   example:"We <b>landed on</b> a 50-50 split for the warrant fee.",
+   nuance:"decide より会話的。結論に「着地した」イメージ。"},
+
+  {v:"go along with", cat:"承認・同意", reg:"neutral",
+   meaning:"(反対せず)従う、賛同する",
+   example:"The board is happy to <b>go along with</b> that structure.",
+   nuance:"積極的賛成というより「反対しないので受け入れる」ニュアンス。"},
+  {v:"get on board", cat:"承認・同意", reg:"neutral",
+   meaning:"賛同して参加する",
+   example:"Once Sumitomo is <b>on board</b>, we can move to signing.",
+   nuance:"buy-inに近いが、「一緒にやる体制になる」という参加のニュアンスが強い。"},
+  {v:"sign on", cat:"承認・同意", reg:"neutral",
+   meaning:"契約・参加に同意する",
+   example:"Two more institutional investors <b>signed on</b> this week.",
+   nuance:"投資家や取引先が正式に参加を決めた場合によく使う。"},
+
+  {v:"push back on", cat:"訂正・意見", reg:"neutral",
+   meaning:"(意見に)反論する、異議を唱える",
+   example:"Legal might <b>push back on</b> that clause.",
+   nuance:"disagree より柔らかく、ビジネスでは非常によく使う。"},
+  {v:"hash out", cat:"訂正・意見", reg:"casual",
+   meaning:"じっくり話し合って詰める",
+   example:"We still need to <b>hash out</b> the notice period.",
+   nuance:"細部を議論して固める、というニュアンス。"},
+  {v:"iron out", cat:"訂正・意見", reg:"neutral",
+   meaning:"(問題点を)解消する、調整する",
+   example:"A few details still need to be <b>ironed out</b> with Blakes.",
+   nuance:"小さな問題・食い違いを丁寧に解消するイメージ。"},
+  {v:"nail down", cat:"訂正・意見", reg:"neutral",
+   meaning:"(詳細を)確定させる",
+   example:"Let's <b>nail down</b> the closing date this week.",
+   nuance:"曖昧だったものをはっきり確定させる、という強めのニュアンス。"},
+  {v:"drill down (into)", cat:"訂正・意見", reg:"neutral",
+   meaning:"深掘りする、詳細を見る",
+   example:"Can we <b>drill down into</b> the AISC numbers?",
+   nuance:"データや議論をより詳細なレベルまで掘り下げる。"},
+
+  {v:"point out", cat:"訂正・意見", reg:"neutral",
+   meaning:"指摘する",
+   example:"Blakes <b>pointed out</b> a discrepancy in the warrant count.",
+   nuance:"flag よりやや直接的で、具体的な誤りの指摘に使う。"},
+  {v:"clear up", cat:"訂正・意見", reg:"neutral",
+   meaning:"(誤解などを)解消する",
+   example:"Just want to <b>clear up</b> any confusion about the wire split.",
+   nuance:"iron outより軽く、誤解を解く場面に特化。"},
+  {v:"go over", cat:"訂正・意見", reg:"neutral",
+   meaning:"見直す、確認する",
+   example:"Let's <b>go over</b> the subscription agreement once more.",
+   nuance:"reviewの口語版。会議前の確認作業によく使う。"},
+  {v:"look into", cat:"訂正・意見", reg:"neutral",
+   meaning:"調査する、調べる",
+   example:"I'll <b>look into</b> why the funds haven't landed yet.",
+   nuance:"investigateよりカジュアルで、社内メールで頻出。"},
+  {v:"touch on", cat:"訂正・意見", reg:"neutral",
+   meaning:"軽く触れる",
+   example:"We only <b>touched on</b> the compensation split briefly.",
+   nuance:"深く議論せず表面的に言及した、というニュアンス。"},
+  {v:"walk back", cat:"訂正・意見", reg:"neutral",
+   meaning:"(発言・立場を)撤回する、後退させる",
+   example:"The counterparty tried to <b>walk back</b> their earlier commitment.",
+   nuance:"一度言ったことを翻す場面で使う、やや慎重な響きの表現。"},
+
+  {v:"kick off", cat:"スケジュール", reg:"neutral",
+   meaning:"開始する、始める",
+   example:"The call will <b>kick off</b> at 10am ET.",
+   nuance:"startよりも「勢いよく始まる」感のある表現。"},
+  {v:"push back (a date)", cat:"スケジュール", reg:"neutral",
+   meaning:"(日程を)後ろ倒しにする",
+   example:"We had to <b>push back</b> the closing by two days.",
+   nuance:"postpone のカジュアル版。頻出。"},
+  {v:"bring forward", cat:"スケジュール", reg:"neutral",
+   meaning:"(日程を)前倒しにする",
+   example:"Could we <b>bring forward</b> the board meeting to Monday?",
+   nuance:"push back の対義語。"},
+  {v:"put off", cat:"スケジュール", reg:"casual",
+   meaning:"先延ばしにする",
+   example:"Let's not <b>put off</b> this decision any longer.",
+   nuance:"postponeよりくだけた言い方。やや否定的な響きも。"},
+  {v:"call off", cat:"スケジュール", reg:"neutral",
+   meaning:"中止する、取りやめる",
+   example:"The trip had to be <b>called off</b> at the last minute.",
+   nuance:"cancel の口語的な言い換え。"},
+  {v:"dial in", cat:"スケジュール", reg:"casual",
+   meaning:"電話・オンラインで参加する",
+   example:"I'll <b>dial in</b> from the airport if needed.",
+   nuance:"会議への遠隔参加を指す定番表現。"},
+
+  {v:"set up", cat:"スケジュール", reg:"neutral",
+   meaning:"設定する、段取りする",
+   example:"Can you <b>set up</b> a call with Marija for tomorrow?",
+   nuance:"会議・打ち合わせの手配を頼むときの定番。"},
+  {v:"lock in", cat:"スケジュール", reg:"neutral",
+   meaning:"(日程・条件を)確定させる",
+   example:"Let's try to <b>lock in</b> the closing date this week.",
+   nuance:"nail downと近いが、より「動かせなくする」確定感が強い。"},
+  {v:"free up", cat:"スケジュール", reg:"neutral",
+   meaning:"(時間を)空ける",
+   example:"I can <b>free up</b> 30 minutes this afternoon.",
+   nuance:"忙しいスケジュールの中から時間を捻出するイメージ。"},
+  {v:"move up", cat:"スケジュール", reg:"neutral",
+   meaning:"(日程を)前倒しする",
+   example:"Could we <b>move up</b> the review to Wednesday?",
+   nuance:"bring forwardとほぼ同義で、より口語的。"},
+  {v:"block off", cat:"スケジュール", reg:"casual",
+   meaning:"(時間を)確保する、押さえる",
+   example:"I've <b>blocked off</b> the morning for the board deck.",
+   nuance:"カレンダー上で時間を確保する、という実務的な表現。"},
+
+  {v:"figure out", cat:"進捗・状況", reg:"casual",
+   meaning:"解決する、理解する",
+   example:"We're still trying to <b>figure out</b> the best structure.",
+   nuance:"solveよりカジュアルで会話的。"},
+  {v:"sort out", cat:"進捗・状況", reg:"neutral",
+   meaning:"解決する、整理する",
+   example:"We've <b>sorted out</b> the wire discrepancy with the bank.",
+   nuance:"問題を片付けた、というニュアンス。resolveの口語版。"},
+  {v:"work out", cat:"進捗・状況", reg:"neutral",
+   meaning:"うまくいく、解決する",
+   example:"I'm confident this will <b>work out</b> fine.",
+   nuance:"「なんとかなる/うまく収まる」という前向きな表現。"},
+  {v:"fall through", cat:"進捗・状況", reg:"neutral",
+   meaning:"(計画・取引が)ダメになる、流れる",
+   example:"The deal nearly <b>fell through</b> over the DAP settlement issue.",
+   nuance:"契約や計画が土壇場で成立しなくなる場合に使う。"},
+  {v:"follow through (on)", cat:"進捗・状況", reg:"neutral",
+   meaning:"最後までやり遂げる",
+   example:"Let's make sure we <b>follow through on</b> the board's request.",
+   nuance:"「言ったことをちゃんと実行する」という信頼感のある表現。"},
+  {v:"roll out", cat:"進捗・状況", reg:"neutral",
+   meaning:"(新しいものを)展開する、公開する",
+   example:"We plan to <b>roll out</b> the new website next week.",
+   nuance:"launchのビジネス版。段階的展開のニュアンスも。"},
+  {v:"ramp up", cat:"進捗・状況", reg:"neutral",
+   meaning:"増強する、加速させる",
+   example:"We need to <b>ramp up</b> due diligence before closing.",
+   nuance:"活動量・ペースを引き上げるイメージ。"},
+  {v:"scale back", cat:"進捗・状況", reg:"neutral",
+   meaning:"縮小する、控えめにする",
+   example:"We might need to <b>scale back</b> the Q3 budget.",
+   nuance:"ramp up の対義語。"},
+  {v:"step up", cat:"進捗・状況", reg:"neutral",
+   meaning:"積極的に対応する、役割を引き受ける",
+   example:"Andy has really <b>stepped up</b> since Claude moved to Tintina.",
+   nuance:"責任・貢献度が増した、というポジティブな表現。"},
+
+  {v:"hold off", cat:"進捗・状況", reg:"neutral",
+   meaning:"保留にする、控える",
+   example:"Let's <b>hold off</b> on sending that until Blakes confirms.",
+   nuance:"「まだ動かない方がいい」という慎重な判断を表す。"},
+  {v:"fall behind", cat:"進捗・状況", reg:"neutral",
+   meaning:"遅れる",
+   example:"We're starting to <b>fall behind</b> on the sign-back deadline.",
+   nuance:"スケジュールに対して遅れが出ていることを客観的に伝える表現。"},
+  {v:"keep up with", cat:"進捗・状況", reg:"neutral",
+   meaning:"ついていく、遅れずに対応する",
+   example:"It's hard to <b>keep up with</b> all the investor emails today.",
+   nuance:"ペースの速さに対応しきれているか、というニュアンス。"},
+  {v:"push through", cat:"進捗・状況", reg:"neutral",
+   meaning:"(困難を)乗り切る、押し通す",
+   example:"We managed to <b>push through</b> the deal despite the delays.",
+   nuance:"障害があっても最後までやり遂げた、という達成感のある表現。"},
+  {v:"get through", cat:"進捗・状況", reg:"neutral",
+   meaning:"乗り越える、終わらせる",
+   example:"Once we <b>get through</b> due diligence, things should move fast.",
+   nuance:"大変な工程を「通過する」イメージ。"},
+
+  {v:"wrap up", cat:"完了・締め", reg:"neutral",
+   meaning:"仕上げる、締めくくる",
+   example:"Let's <b>wrap up</b> the subscription review by Friday.",
+   nuance:"finishのカジュアル版。会議や作業の締めに頻出。"},
+  {v:"tie up loose ends", cat:"完了・締め", reg:"casual",
+   meaning:"細部を片付ける、後始末をする",
+   example:"Just <b>tying up loose ends</b> before the closing.",
+   nuance:"「最後の細かい部分を片付ける」イメージ。"},
+  {v:"close out", cat:"完了・締め", reg:"neutral",
+   meaning:"完了させる、締める",
+   example:"We should be able to <b>close out</b> this file by Thursday.",
+   nuance:"案件・タスクの完全終了を指す。"},
+  {v:"wind down", cat:"完了・締め", reg:"casual",
+   meaning:"徐々に終わらせる、落ち着かせる",
+   example:"Things should start to <b>wind down</b> after the closing.",
+   nuance:"忙しさや活動が緩やかに収束していくイメージ。"},
+  {v:"finish up", cat:"完了・締め", reg:"casual",
+   meaning:"仕上げる、終わらせる",
+   example:"I'm just <b>finishing up</b> the last two agreements.",
+   nuance:"wrap upとほぼ同義。より短いタスクに使うことが多い。"},
+  {v:"sign off", cat:"完了・締め", reg:"neutral",
+   meaning:"(業務を)終える、メールを締めくくる",
+   example:"I'll <b>sign off</b> for the day once this is sent.",
+   nuance:"sign off on(承認する)とは別の意味。「一日の業務を終える」場面で使う。"},
+  {v:"put to bed", cat:"完了・締め", reg:"casual",
+   meaning:"完全に片付ける、終わらせる",
+   example:"Glad we can finally <b>put</b> this deal <b>to bed</b>.",
+   nuance:"長く続いた案件がようやく完了した、という達成感のある言い方。"},
+
+  {v:"bump up", cat:"優先度・緊急", reg:"casual",
+   meaning:"優先度を上げる",
+   example:"Can we <b>bump</b> this <b>up</b> the priority list?",
+   nuance:"タスクの順番・重要度を引き上げるイメージ。"},
+  {v:"jump on", cat:"優先度・緊急", reg:"casual",
+   meaning:"すぐに対応する",
+   example:"I'll <b>jump on</b> this as soon as I'm off this call.",
+   nuance:"即座に取り掛かる、という前向きなスピード感を伝える。"},
+  {v:"get on top of", cat:"優先度・緊急", reg:"neutral",
+   meaning:"早めに把握・対応する",
+   example:"We need to <b>get on top of</b> the wire discrepancies now.",
+   nuance:"後手に回らないよう先手を打つニュアンス。"},
+  {v:"stay ahead of", cat:"優先度・緊急", reg:"neutral",
+   meaning:"先回りして対応する",
+   example:"Let's <b>stay ahead of</b> any questions the board might have.",
+   nuance:"問題が起きる前に備えておく、という予防的な表現。"},
+  {v:"act on", cat:"優先度・緊急", reg:"neutral",
+   meaning:"(情報・指示に基づいて)行動する",
+   example:"We should <b>act on</b> this feedback before the next draft.",
+   nuance:"「聞いただけで終わらせず実際に対応する」ニュアンス。"},
+  {v:"push forward", cat:"優先度・緊急", reg:"neutral",
+   meaning:"推し進める",
+   example:"Let's <b>push forward</b> with the closing as planned.",
+   nuance:"迷いなく前進する、という前向きな決意を示す表現。"},
+
+  {v:"get to the bottom of", cat:"問題対応", reg:"neutral",
+   meaning:"根本原因を突き止める",
+   example:"We're trying to <b>get to the bottom of</b> the wire mix-up.",
+   nuance:"表面的な対応でなく、原因そのものを特定するニュアンス。"},
+  {v:"smooth over", cat:"問題対応", reg:"neutral",
+   meaning:"丸く収める、取り繕う",
+   example:"Andy helped <b>smooth over</b> the misunderstanding with the investor.",
+   nuance:"関係性やトラブルを穏便に収める場面で使う。"},
+  {v:"patch up", cat:"問題対応", reg:"casual",
+   meaning:"(関係・問題を)修復する",
+   example:"We managed to <b>patch up</b> the timing issue with Assante.",
+   nuance:"smooth overより口語的で、応急処置的なニュアンスもある。"},
+  {v:"clean up", cat:"問題対応", reg:"neutral",
+   meaning:"整理する、後始末する",
+   example:"Let's <b>clean up</b> the agreement before sending it out.",
+   nuance:"体裁や細部を整える、という意味でもよく使われる。"},
+  {v:"work through", cat:"問題対応", reg:"neutral",
+   meaning:"(問題を)順に解決していく",
+   example:"We're <b>working through</b> a few issues in the IRA draft.",
+   nuance:"一つずつ着実に片付けていくプロセスを表す。"},
+  {v:"run into", cat:"問題対応", reg:"neutral",
+   meaning:"(問題に)遭遇する",
+   example:"We <b>ran into</b> a snag with the Yoti verification.",
+   nuance:"予期せぬ問題にぶつかった、というニュアンス。"},
+  {v:"head off", cat:"問題対応", reg:"neutral",
+   meaning:"未然に防ぐ",
+   example:"Let's <b>head off</b> any confusion by sending a note now.",
+   nuance:"問題が起きる前に先回りして対処するイメージ。"},
+
+  {v:"step down", cat:"人事・組織", reg:"neutral",
+   meaning:"退任する",
+   example:"Claude will <b>step down</b> as CEO of GMC to focus on Tintina.",
+   nuance:"役職を退く、という中立的でよく使われる表現。"},
+  {v:"take over", cat:"人事・組織", reg:"neutral",
+   meaning:"引き継ぐ、後任になる",
+   example:"Andy is expected to <b>take over</b> more of the GMC responsibilities.",
+   nuance:"役割や業務を丸ごと引き継ぐイメージ。"},
+  {v:"bring on board", cat:"人事・組織", reg:"neutral",
+   meaning:"迎え入れる、参加させる",
+   example:"We're looking to <b>bring</b> a full-time CEO <b>on board</b> for Tintina.",
+   nuance:"新しいメンバーやパートナーをチームに迎える場面で使う。"},
+  {v:"let go", cat:"人事・組織", reg:"neutral",
+   meaning:"解雇する",
+   example:"The company had to <b>let</b> Karim <b>go</b> at the end of January.",
+   nuance:"fire より柔らかい婉曲表現。人事メールで定番。"},
+  {v:"fill in for", cat:"人事・組織", reg:"neutral",
+   meaning:"(人の)代理を務める",
+   example:"James will <b>fill in for</b> the CEO role part-time initially.",
+   nuance:"一時的に役割を代行する、というニュアンス。"},
+  {v:"take on", cat:"人事・組織", reg:"neutral",
+   meaning:"引き受ける、新たに雇う",
+   example:"Andy is <b>taking on</b> a bigger role at GMC going forward.",
+   nuance:"責任や業務量が増える場合によく使われる。"},
+  {v:"step into", cat:"人事・組織", reg:"neutral",
+   meaning:"(役割に)就く",
+   example:"Someone will need to <b>step into</b> the VP Exploration role.",
+   nuance:"新しいポジションに移る、というやや前向きな響き。"},
+
+  {v:"pay off", cat:"お金・数字", reg:"neutral",
+   meaning:"完済する / 割に合う、報われる",
+   example:"The extra due diligence work really <b>paid off</b> in the end.",
+   nuance:"「投資した労力・時間が報われた」という意味でも頻出。"},
+  {v:"write off", cat:"お金・数字", reg:"neutral",
+   meaning:"損失として処理する、帳消しにする",
+   example:"We had to <b>write off</b> the small overpayment as immaterial.",
+   nuance:"会計・財務文脈での定番表現。"},
+  {v:"pay out", cat:"お金・数字", reg:"neutral",
+   meaning:"支払う、配当する",
+   example:"The compensation fee will be <b>paid out</b> at closing.",
+   nuance:"当事者への支払い実行を指す、やや事務的な響き。"},
+  {v:"add up", cat:"お金・数字", reg:"casual",
+   meaning:"合計が合う、辻褄が合う",
+   example:"The warrant totals don't quite <b>add up</b> — can we double check?",
+   nuance:"数字や話の筋が合わないときに使う便利な表現。"},
+  {v:"break down", cat:"お金・数字", reg:"neutral",
+   meaning:"内訳を示す、分解する",
+   example:"Could you <b>break down</b> the AISC by cost category?",
+   nuance:"全体を項目ごとに分けて説明する場面で頻出。"},
+  {v:"factor in", cat:"お金・数字", reg:"neutral",
+   meaning:"考慮に入れる",
+   example:"We need to <b>factor in</b> FX movements for the USD tranche.",
+   nuance:"見落としがちな要素を計算・判断に含める、というニュアンス。"},
+  {v:"price in", cat:"お金・数字", reg:"neutral",
+   meaning:"(市場が)織り込み済みである",
+   example:"The market may have already <b>priced in</b> the rate decision.",
+   nuance:"金融特有の表現。まだ起きていないことが価格に反映済み、という意味。"},
+  {v:"rack up", cat:"お金・数字", reg:"casual",
+   meaning:"(費用・数量を)積み上げる",
+   example:"Legal fees have really <b>racked up</b> during this closing.",
+   nuance:"望ましくない増加(コストなど)によく使われる、ややネガティブな響き。"},
+];
+
+const REG_LABEL = { neutral: "ニュートラル", casual: "くだけた" };
+
+function uniqueCats(){
+  const set = [];
+  DATA.forEach(d => { if(!set.includes(d.cat)) set.push(d.cat); });
+  return set;
+}
+
+let activeFolder = "All";
+let query = "";
+
+function renderFolders(){
+  const cats = uniqueCats();
+  const container = document.getElementById('folders');
+  container.innerHTML = '<div class="folders-label">Folders</div>';
+
+  const makeBtn = (label, count, key) => {
+    const btn = document.createElement('button');
+    btn.className = 'folder-btn' + (activeFolder === key ? ' active' : '');
+    btn.innerHTML = `<span>${label}</span><span class="n">${count}</span>`;
+    btn.onclick = () => { activeFolder = key; renderFolders(); renderList(); };
+    return btn;
+  };
+
+  container.appendChild(makeBtn('All', DATA.length, 'All'));
+  cats.forEach(c => {
+    const count = DATA.filter(d => d.cat === c).length;
+    container.appendChild(makeBtn(c, count, c));
+  });
+}
+
+function matchesQuery(item, q){
+  if(!q) return true;
+  const hay = (item.v + ' ' + item.meaning + ' ' + item.nuance + ' ' + item.cat).toLowerCase();
+  return hay.includes(q.toLowerCase());
+}
+
+function renderList(){
+  const list = document.getElementById('list');
+  const noResults = document.getElementById('noResults');
+  list.innerHTML = '';
+
+  const filtered = DATA.filter(d =>
+    (activeFolder === 'All' || d.cat === activeFolder) && matchesQuery(d, query)
+  );
+
+  document.getElementById('countBadge').textContent = filtered.length + ' verbs';
+
+  if(filtered.length === 0){
+    noResults.style.display = 'block';
+    return;
+  }
+  noResults.style.display = 'none';
+
+  filtered.forEach((item, idx) => {
+    const row = document.createElement('div');
+    row.className = 'row';
+
+    row.innerHTML = `
+      <div class="row-head">
+        <span class="reg-dot ${item.reg}"></span>
+        <div class="row-main">
+          <div class="row-verb">${item.v}</div>
+          <div class="row-preview">${item.meaning}</div>
+        </div>
+        <span class="row-cat">${item.cat}</span>
+        <span class="row-toggle">+</span>
+      </div>
+      <div class="row-body">
+        <div class="row-body-inner">
+          <div>
+            <div class="field-label">意味</div>
+            <div class="meaning">${item.meaning}</div>
+          </div>
+          <div>
+            <div class="field-label">例文</div>
+            <div class="example">${item.example}</div>
+          </div>
+          <div>
+            <div class="field-label">ニュアンス</div>
+            <div class="nuance">${item.nuance}</div>
+          </div>
+          <div class="reg-line">
+            <span class="reg-dot ${item.reg}"></span> ${REG_LABEL[item.reg]}
+          </div>
+        </div>
+      </div>
+    `;
+
+    const head = row.querySelector('.row-head');
+    head.addEventListener('click', () => {
+      const isOpen = row.classList.contains('open');
+      document.querySelectorAll('.row.open').forEach(r => {
+        r.classList.remove('open');
+        r.querySelector('.row-toggle').textContent = '+';
+      });
+      if(!isOpen){
+        row.classList.add('open');
+        row.querySelector('.row-toggle').textContent = '−';
+      }
+    });
+
+    list.appendChild(row);
+  });
+}
+
+document.getElementById('search').addEventListener('input', (e) => {
+  query = e.target.value;
+  renderList();
+});
+
+renderFolders();
+renderList();
+</script>
+
+</body>
+</html>
